@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hw-10</title>
+  </head>
+  <body>
+    <script>
+// class realization
+
+      class ToDoList {
+        constructor(name, text, status) {
+          (this.name = name), (this.text = text), (this.status = status);
+        }
+      }
+
+      class TDlists {
+        list = [];
+        constructor(name) {
+          this.name = name;
+        }
+        // проверять уникальность задач при добавлении
+
+        addList({ name, text, status }) {
+          const result = this.list.findIndex(function (element) {
+            return element.name === name;
+          });
+          // if (this.confirmList()) {
+          if (result === -1) {
+            this.list.push({ name, text, status });
+          }
+          // }
+        }
+        //  или редактировании
+        // при сохранении изменений тоже нужно спросить нужно ли сохранять изменения или отменить. Можете использовать confirm, но не внутри метода
+        edit({ name }, updateValue) {
+          if (this.confirmList()) {
+            this.list.find((element) => {
+              if (element.name === name) return (element.name = updateValue);
+            });
+          }
+        }
+
+        // при удалении просить подтверждение, можете использовать confirm, но не внутри метода
+        removeList({ name }) {
+          if (this.confirmList()) {
+            this.list = this.list.filter((note) => note.name !== name);
+          }
+          return;
+        }
+
+        confirmList() {
+          return confirm("Are you sure?");
+        }
+
+        // помечать заметки, как выполненные
+        toggle({ name }) {
+          this.list.forEach((note) => {
+            if (note.name === name) note.status = !note.status;
+          });
+        }
+        // выводить общее количество задач / сколько выполнили / сколько осталось. Выводите объектом
+        getSummery() {
+          return this.list.reduce((info, note) => {
+            if (!info.total) {
+              info.total = this.list.length;
+            }
+            if (!info[note.status]) {
+              info[note.status] = 0;
+            }
+
+            info[note.status]++;
+            return info;
+          }, {});
+        }
+      }
+
+      const shop = new ToDoList("Shop", "buy milk", true);
+      const readBook = new ToDoList("Read", "book", true);
+      const readInfo = new ToDoList("Read1", "book", true);
+      const shopList = new TDlists("Shop-List");
+      shopList.addList(shop);
+      shopList.addList(readBook);
+      shopList.addList(readInfo);
+      shopList.edit(readInfo, "Reeee");
+      console.log(shopList);
+      shopList.toggle(readInfo);
+      shopList.getSummery();
+  </script>
+  </body>
+</html>
